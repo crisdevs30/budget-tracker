@@ -19,15 +19,13 @@
 
     <div id="total">Total: $0</div>
 
-    <form id="entryForm">
-      <input type="text" id="name" placeholder="Name (e.g. Sonos Fund)" required />
-      <input type="number" id="amount" placeholder="Amount (+ / -)" required />
-      <button type="submit">Add</button>
-    </form>
+ <form id="transactionForm">
+  <input type="text" id="name" placeholder="Name" required />
+  <input type="number" id="amount" placeholder="Amount" required />
+  <button type="submit">Add</button>
+</form>
 
-    <ul id="history"></ul>
-  </div>
+<ul id="transactionList"></ul>
 
-  <script src="script.js"></script>
-</body>
-</html>
+<p><strong>Total Balance:</strong> <span id="balance">$0.00</span></p>
+<p><strong>Savings:</strong> <span id="savings">$0.00</span></p>

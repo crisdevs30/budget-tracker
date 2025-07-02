@@ -1,47 +1,46 @@
-let total = 0;
 let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
 
-const totalEl = document.getElementById("total");
-const form = document.getElementById("entryForm");
-const history = document.getElementById("history");
+const list = document.getElementById("transactionList");
+const form = document.getElementById("transactionForm");
+const nameInput = document.getElementById("name");
+const amountInput = document.getElementById("amount");
+const balanceDisplay = document.getElementById("balance");
+const savingsDisplay = document.getElementById("savings");
 
-function updateTotal() {
-  total = transactions.reduce((acc, item) => acc + item.amount, 0);
-  totalEl.textContent = total.toFixed(2);
-}
+function updateDisplay() {
+  list.innerHTML = "";
+  let balance = 0;
 
-function renderHistory() {
-  history.innerHTML = "";
-  transactions.forEach((item, index) => {
-    const li = document.createElement("li");
-    li.className = item.amount < 0 ? "expense" : "income";
-    li.textContent = `${item.desc} - $${item.amount.toFixed(2)} [${item.category}]`;
-    history.appendChild(li);
+  transactions.forEach((tx, index) => {
+    const item = document.createElement("li");
+    item.textContent = `${tx.name}: $${tx.amount}`;
+    list.appendChild(item);
+
+    balance += parseFloat(tx.amount);
   });
+
+  balanceDisplay.textContent = `$${balance.toFixed(2)}`;
+  savingsDisplay.textContent = `$${balance.toFixed(2)}`;
 }
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  const desc = document.getElementById("desc").value;
-  const amount = parseFloat(document.getElementById("amount").value);
-  const category = document.getElementById("category").value;
 
-  if (!desc || isNaN(amount)) return;
+  const name = nameInput.value.trim();
+  const amount = parseFloat(amountInput.value.trim());
 
-  const transaction = { desc, amount, category };
-  transactions.push(transaction);
+  if (name === "" || isNaN(amount)) {
+    alert("Please enter a valid name and amount.");
+    return;
+  }
+
+  transactions.push({ name, amount });
   localStorage.setItem("transactions", JSON.stringify(transactions));
+  updateDisplay();
 
-  form.reset();
-  updateTotal();
-  renderHistory();
+  // Reset form
+  nameInput.value = "";
+  amountInput.value = "";
 });
 
-updateTotal();
-renderHistory();
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker
-    .register('/service-worker.js')
-    .then((reg) => console.log('✅ Service Worker registered!', reg))
-    .catch((err) => console.error('❌ Service Worker registration failed:', err));
-}
+updateDisplay();
